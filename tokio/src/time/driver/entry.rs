@@ -120,6 +120,13 @@ impl Entry {
             entry.error(err);
         } else {
             let when = inner.normalize_deadline(deadline);
+
+            if when > crate::time::wheel::MAX_DURATION {
+                panic!("Duration in milliseconds ({}) exceeds MAX_DURATION ({})",
+                    when,
+                    crate::time::wheel::MAX_DURATION);
+            }
+
             let state = if when <= inner.elapsed() {
                 ELAPSED
             } else {
